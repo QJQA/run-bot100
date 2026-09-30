@@ -9,7 +9,7 @@
   const WEEKDAY = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 
   // 13 周计划出处，定下来后改这里
-  const PLAN_CREDIT = ''
+  const PLAN_CREDIT = '计划参考自《爱上跑步的13周》，〔加〕伊恩·麦克尼尔、加拿大不列颠哥伦比亚运动医学理事会 著，南海出版公司，2014。'
 
   const icon = name => `<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`
 
