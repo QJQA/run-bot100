@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>跑者工具箱 | 配速、心率区间、13 周跑 10K、训练日志</title>
+<meta name="description" content="免费的跑步工具：配速计算和分段配速表、完赛成绩预测、丹尼尔斯心率区间、13 周从零跑完 10 公里计划、训练与恢复日志（周跑量涨幅、训练负荷、晨起心率提醒）。打开网页即用，数据只存在你自己的设备上。">
+<meta name="keywords" content="配速计算器,跑步配速,心率区间,丹尼尔斯,储备心率,新手跑步计划,13周10公里,跑步日志,跑步受伤,ACWR">
+<link rel="canonical" href="https://run.bot100.store/">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="跑者工具箱">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preload" href="fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:title" content="跑者工具箱 | run.bot100.store">
+<meta property="og:description" content="配速、心率区间、13 周跑 10K 计划、训练日志，免费即用。">
+<meta property="og:url" content="https://run.bot100.store/">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"跑者工具箱","url":"https://run.bot100.store/","applicationCategory":"HealthApplication","operatingSystem":"Web","description":"配速计算、完赛预测、丹尼尔斯心率区间、13 周新手 10K 计划、训练与恢复日志。","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"isPartOf":{"@type":"WebSite","name":"BOT100.STORE","url":"https://bot100.store/"}}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<!-- 导航：手机为底部标签栏，电脑为左侧栏 -->
+<nav class="nav" aria-label="主导航">
+  <a class="nav-brand" href="#today"><img src="icon.svg" alt="" width="28" height="28"><span>跑者工具箱</span></a>
+  <a href="#today" data-tab="today" data-icon="home">今天</a>
+  <a href="#plan" data-tab="plan" data-icon="plan">计划</a>
+  <a href="#log" data-tab="log" data-icon="log">日志</a>
+  <a href="#tools" data-tab="tools" data-icon="tools">工具</a>
+  <a class="nav-foot" href="https://bot100.store/">BOT100.STORE</a>
+</nav>
+
+<main id="main">
+
+<!-- ============================== 今天 -->
+<section id="tab-today" class="tab" hidden>
+  <header class="title-bar">
+    <p class="date" id="todayDate"></p>
+    <h1>今天</h1>
+  </header>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-title" data-icon="shoe">本周</span><a class="mod-link" href="#log">趋势</a></div>
+    <div class="week-widget">
+      <div class="figures">
+        <div class="fig main"><b id="tKm">0</b><span>公里</span></div>
+        <div class="fig"><b id="tRuns">0</b><span>次</span></div>
+        <div class="fig"><b id="tLoad">0</b><span>训练负荷</span></div>
+      </div>
+      <div class="days" id="tDays"></div>
+    </div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-title" data-icon="warn">身体状态</span></div>
+    <div class="alerts" id="tAlerts"></div>
+  </div>
+
+  <div class="module next" id="tNextMod">
+    <div class="mod-head"><span class="mod-title" data-icon="plan">下一次训练</span><a class="mod-link" href="#plan">全部计划</a></div>
+    <div id="tNext"></div>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-title" data-icon="heart">我的心率区间</span><a class="mod-link" href="#tools/hr">设置</a></div>
+    <div id="tZones"></div>
+  </div>
+
+  <div class="tiles">
+    <a class="tile" href="#tools/pace"><span class="tile-ic" data-icon="timer"></span><b>配速计算</b><span>目标时间换算配速</span></a>
+    <a class="tile" href="#tools/predict"><span class="tile-ic" data-icon="trophy"></span><b>成绩预测</b><span>5K 推 10K、半马</span></a>
+  </div>
+</section>
+
+<!-- ============================== 计划 -->
+<section id="tab-plan" class="tab" hidden>
+  <header class="title-bar">
+    <h1>13 周跑 10K</h1>
+    <p class="sub">每周 3 次，隔天跑，跑走交替。跑的部分用能说话的速度；一周完成得吃力，就把这周再重复一遍。</p>
+  </header>
+
+  <div class="module progress">
+    <div class="progress-num"><b id="planCount">0</b><span>/ 39 次</span></div>
+    <div class="cells" id="planGrid" aria-hidden="true"></div>
+  </div>
+
+  <div class="module flush weeks" id="planWeeks"></div>
+  <p class="foot-note" id="planCredit"></p>
+</section>
+
+<!-- ============================== 日志 -->
+<section id="tab-log" class="tab" hidden>
+  <header class="title-bar">
+    <h1>训练日志</h1>
+    <p class="sub">记训练，也记恢复。</p>
+  </header>
+
+  <div class="module" id="lEmpty" hidden>
+    <div class="empty">
+      <span class="empty-ic" data-icon="log"></span>
+      <b>还没有记录</b>
+      <p>每次跑完记一笔，早上顺手记晨起心率和睡眠。记满一两周，就能看出跑量有没有加太快。</p>
+      <button class="btn primary" data-open-sheet>记第一笔</button>
+    </div>
+  </div>
+
+  <div class="module" id="lWeeksCard" hidden>
+    <div class="mod-head"><span class="mod-title">每周趋势</span></div>
+    <div id="lChart" class="chart"></div>
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr><th>周一</th><th>公里</th><th>涨幅</th><th>次数</th><th>负荷</th><th>ACWR</th></tr></thead>
+        <tbody id="lWeeks"></tbody>
+      </table>
+    </div>
+    <p class="note">负荷 = 用时（分钟）× RPE。ACWR = 本周负荷 ÷ 前 4 周平均负荷，0.8 到 1.3 算平稳。它只是参考指标，科学界对它的预测力有争议，记满 5 周才显示。</p>
+  </div>
+
+  <div class="module flush" id="lListCard" hidden>
+    <div class="mod-head pad"><span class="mod-title">全部记录</span><button class="btn text" id="lShowAll" hidden>显示全部</button></div>
+    <ul class="records" id="lList"></ul>
+  </div>
+
+  <div class="module">
+    <div class="mod-head"><span class="mod-title">备份</span></div>
+    <p class="lead">记录只保存在这台设备的浏览器里，换手机或清缓存前先导出。导出的文件也可以交给 AI 助手帮你分析训练。</p>
+    <div class="btn-row">
+      <button class="btn" id="dExport"><span data-icon="download"></span>导出</button>
+      <button class="btn" id="dImport"><span data-icon="upload"></span>导入</button>
+      <input type="file" id="dFile" accept=".json,application/json" hidden>
+    </div>
+    <p class="msg" id="dMsg" hidden></p>
+    <p class="note">旧版「跑步无伤监控系统」（runlog.bot100.store）导出的文件也能直接导入。</p>
+  </div>
+
+  <details class="module guide">
+    <summary class="mod-head"><span class="mod-title">怎么记、怎么看</span><span class="chev" data-icon="caret"></span></summary>
+    <dl>
+      <dt>RPE 自觉用力</dt>
+      <dd>1 到 3 很轻松，能聊天；4 到 6 中等，能说短句；7 到 8 吃力，只能蹦几个词；9 到 10 全力。新手大部分跑步应该在 3 到 5。</dd>
+      <dt>周跑量涨幅别超过 10%</dt>
+      <dd>心肺几周就能适应，骨骼和肌腱要慢得多。"感觉还能跑更多"的时候最容易受伤。</dd>
+      <dt>晨起心率高 5 以上，今天就放轻松</dt>
+      <dd>起床后先别下床，安静躺 1 分钟再测，每天用同一方式。</dd>
+      <dt>疼痛改变了跑姿就停</dt>
+      <dd>跑完第二天还疼、或越跑越疼，先休息；一周不好转去看运动医学科。</dd>
+    </dl>
+  </details>
+</section>
+
+<!-- ============================== 工具 -->
+<section id="tab-tools" class="tab" hidden>
+  <header class="title-bar">
+    <h1>工具</h1>
+  </header>
+
+  <div class="segmented" role="tablist" aria-label="工具">
+    <a href="#tools/pace" data-sub="pace" role="tab">配速</a>
+    <a href="#tools/predict" data-sub="predict" role="tab">成绩预测</a>
+    <a href="#tools/hr" data-sub="hr" role="tab">心率区间</a>
+  </div>
+
+  <!-- 配速 -->
+  <div class="sub-panel" id="sub-pace" hidden>
+    <div class="module">
+      <p class="lead">定一个目标时间，算出每公里该跑多快，并拆成分段配速。</p>
+      <div class="grid2 stack-sm">
+        <div class="field">
+          <label for="pDist">距离</label>
+          <div class="unit-in"><input id="pDist" type="number" inputmode="decimal" min="0.1" step="0.01"><span>公里</span></div>
+        </div>
+        <div class="field">
+          <label for="pM">目标用时</label>
+          <div class="hms">
+            <div class="unit-in"><input id="pH" type="number" inputmode="numeric" min="0" aria-label="小时"><span>时</span></div>
+            <div class="unit-in"><input id="pM" type="number" inputmode="numeric" min="0" max="59" aria-label="分钟"><span>分</span></div>
+            <div class="unit-in"><input id="pS" type="number" inputmode="numeric" min="0" max="59" aria-label="秒"><span>秒</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="chips" id="pPresets" aria-label="常用距离"></div>
+      <details class="more">
+        <summary>前慢后快（可选）</summary>
+        <div class="grid2">
+          <div class="field">
+            <label for="pStep">每隔多少公里提速</label>
+            <select id="pStep"><option value="1">1 公里</option><option value="2" selected>2 公里</option><option value="3">3 公里</option><option value="5">5 公里</option></select>
+          </div>
+          <div class="field">
+            <label for="pProg">每次快多少</label>
+            <div class="unit-in"><input id="pProg" type="number" inputmode="numeric" min="0" step="1" value="0"><span>秒/公里</span></div>
+          </div>
+        </div>
+      </details>
+      <p class="msg" id="pMsg" hidden></p>
+      <button class="btn primary block" id="pCalc">计算配速</button>
+    </div>
+
+    <div class="module" id="pResult" hidden>
+      <div class="figures">
+        <div class="fig main"><b id="pAvg">--:--</b><span>平均配速 / 公里</span></div>
+        <div class="fig"><b id="pSpeed">-</b><span>时速 km/h</span></div>
+        <div class="fig"><b id="pTotal">--:--</b><span>分段合计</span></div>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>段</th><th>到</th><th>配速</th><th>本段用时</th></tr></thead>
+          <tbody id="pSplits"></tbody>
+        </table>
+      </div>
+      <p class="note">配速可以直接改，合计用时会跟着变。</p>
+    </div>
+  </div>
+
+  <!-- 成绩预测 -->
+  <div class="sub-panel" id="sub-predict" hidden>
+    <div class="module">
+      <p class="lead">用最近一次认真跑的成绩，估算其他距离能跑多快。</p>
+      <div class="grid2 stack-sm">
+        <div class="field">
+          <label for="rDist">已跑距离</label>
+          <select id="rDist"></select>
+        </div>
+        <div class="field">
+          <label for="rM">成绩</label>
+          <div class="hms">
+            <div class="unit-in"><input id="rH" type="number" inputmode="numeric" min="0" aria-label="小时"><span>时</span></div>
+            <div class="unit-in"><input id="rM" type="number" inputmode="numeric" min="0" max="59" aria-label="分钟"><span>分</span></div>
+            <div class="unit-in"><input id="rS" type="number" inputmode="numeric" min="0" max="59" aria-label="秒"><span>秒</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="msg" id="rMsg" hidden></p>
+      <button class="btn primary block" id="rCalc">预测成绩</button>
+    </div>
+    <div class="module flush" id="rResult" hidden>
+      <ul class="list" id="rBody"></ul>
+    </div>
+    <p class="foot-note">Riegel 公式：T₂ = T₁ × (D₂ / D₁)<sup>1.06</sup>。前提是长距离有相应训练，从 5 公里推全马通常偏乐观。</p>
+  </div>
+
+  <!-- 心率区间 -->
+  <div class="sub-panel" id="sub-hr" hidden>
+    <div class="module">
+      <p class="lead">按丹尼尔斯训练法和储备心率，算出每种训练该跑在多少心率。填一次会记住。</p>
+      <div class="grid3">
+        <div class="field">
+          <label for="hRest">晨起静息心率</label>
+          <div class="unit-in"><input id="hRest" type="number" inputmode="numeric" min="30" max="100"><span>次/分</span></div>
+        </div>
+        <div class="field">
+          <label for="hMax">最大心率 <em>可空</em></label>
+          <div class="unit-in"><input id="hMax" type="number" inputmode="numeric" min="100" max="230"><span>次/分</span></div>
+        </div>
+        <div class="field">
+          <label for="hAge">年龄</label>
+          <div class="unit-in"><input id="hAge" type="number" inputmode="numeric" min="10" max="100"><span>岁</span></div>
+        </div>
+      </div>
+      <p class="inline-tip" id="hBaseline" hidden></p>
+      <p class="msg" id="hMsg" hidden></p>
+      <button class="btn primary block" id="hCalc">计算区间</button>
+    </div>
+
+    <div class="module" id="hResult" hidden>
+      <div class="figures">
+        <div class="fig main"><b id="hHrrOut">-</b><span>储备心率</span></div>
+        <div class="fig"><b id="hRestOut">-</b><span>静息心率</span></div>
+        <div class="fig"><b id="hMaxOut">-</b><span id="hMaxLabel">最大心率</span></div>
+      </div>
+      <div class="zones" id="hZones"></div>
+    </div>
+    <p class="foot-note">储备心率 = 最大心率 − 静息心率；区间心率 = 静息心率 + 储备心率 × 强度。没填最大心率时按 208 − 0.7 × 年龄 估算，个体差异可能有 10 次/分左右，跑表实测的最大心率更准。R 重复跑（200 到 400 米快跑）按配速控制，不看心率。<br>来源：Jack Daniels《丹尼尔斯经典跑步训练法》（Daniels' Running Formula，第 3 版，2013）。</p>
+  </div>
+</section>
+
+<footer class="page-foot">
+  <p>数据只保存在你的设备上，不上传。计算结果仅供参考，不构成医疗建议。</p>
+  <a href="https://bot100.store/">BOT100.STORE 更多免费小工具</a>
+</footer>
+</main>
+
+<!-- 记一笔：手机底部弹出，电脑居中 -->
+<button class="fab" id="fab" data-open-sheet aria-label="记一笔"><span data-icon="plus"></span><span class="fab-label">记一笔</span></button>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sheetTitle">
+  <form method="dialog" class="sheet-inner" id="sheetForm" novalidate>
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <header class="sheet-head">
+      <h2 id="sheetTitle">记一笔</h2>
+      <button type="button" class="icon-btn" id="sheetClose" aria-label="关闭" data-icon="close"></button>
+    </header>
+    <div class="sheet-body">
+      <div class="segmented small" id="fTypeSeg" role="radiogroup" aria-label="类型"></div>
+      <div class="grid2">
+        <div class="field"><label for="fDate">日期</label><input id="fDate" type="date"></div>
+        <div class="field run-only"><label for="fType">训练类型</label><select id="fType"></select></div>
+      </div>
+      <div class="grid3 run-only">
+        <div class="field"><label for="fKm">距离</label><div class="unit-in"><input id="fKm" type="number" inputmode="decimal" min="0" step="0.01"><span>公里</span></div></div>
+        <div class="field"><label for="fMin">用时</label><div class="unit-in"><input id="fMin" type="number" inputmode="decimal" min="0" step="0.1"><span>分钟</span></div></div>
+        <div class="field"><span class="lbl">配速</span><output id="fPace" class="out">--:--</output></div>
+      </div>
+      <div class="field run-only">
+        <span class="lbl">跑完多累（RPE） <em id="fRpeLabel">选一个</em></span>
+        <div class="rpe" id="fRpe" role="group" aria-label="RPE 1 到 10"></div>
+        <div class="rpe-scale"><span>很轻松</span><span>全力</span></div>
+      </div>
+      <div class="field run-only"><label for="fPlan">对应计划课次 <em>可选</em></label><select id="fPlan"></select></div>
+      <details class="more" id="fMorning">
+        <summary>晨起恢复数据</summary>
+        <div class="grid3">
+          <div class="field"><label for="fRestHr">静息心率</label><div class="unit-in"><input id="fRestHr" type="number" inputmode="numeric" min="30" max="120"><span>次/分</span></div></div>
+          <div class="field"><label for="fSleep">睡眠</label><div class="unit-in"><input id="fSleep" type="number" inputmode="decimal" min="0" max="24" step="0.5"><span>小时</span></div></div>
+          <div class="field"><label for="fFatigue">疲劳 <em>1 到 10</em></label><input id="fFatigue" type="number" inputmode="numeric" min="1" max="10"></div>
+          <div class="field"><label for="fHrv">HRV <em>可选</em></label><div class="unit-in"><input id="fHrv" type="number" inputmode="numeric" min="0"><span>ms</span></div></div>
+          <div class="field"><label for="fWeight">体重 <em>可选</em></label><div class="unit-in"><input id="fWeight" type="number" inputmode="decimal" min="20" step="0.1"><span>kg</span></div></div>
+        </div>
+      </details>
+      <div class="field"><label for="fNote">身体不适 <em>没有就空着</em></label><input id="fNote" type="text" maxlength="120" placeholder="例如：右膝外侧跑到 4 公里开始疼"></div>
+    </div>
+    <footer class="sheet-foot">
+      <p class="msg" id="fMsg" hidden></p>
+      <button type="button" class="btn primary block" id="fSave">保存</button>
+    </footer>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="icons.js"></script>
+<script src="calc.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
